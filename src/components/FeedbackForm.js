@@ -1,15 +1,23 @@
 import Card from "./shared/Card";
 import Button from "./shared/Button";
 import RatingSelect from "./RatingSelect";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import FeedbackContext from "../context/FeedbackContext";
 
 function FeedbackForm() {
-  const { addFeedback } = useContext(FeedbackContext);
+  const { addFeedback, feedbackEditState, updateFeedback } =
+    useContext(FeedbackContext);
   const [text, setText] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [warningMessage, setWarningMessage] = useState("");
   const [rating, setRating] = useState(10);
+  useEffect(() => {
+    if (feedbackEditState.edit) {
+      setText(feedbackEditState.item.text);
+      setRating(feedbackEditState.item.rating);
+      setBtnDisabled(false);
+    }
+  }, [feedbackEditState]);
 
   function handleInput(e) {
     if (e.target.value === "") {
@@ -17,6 +25,7 @@ function FeedbackForm() {
       setWarningMessage("");
     } else if (e.target.value.trim().length <= 10) {
       setWarningMessage("Feedback should be at least 10 characters long.");
+      setBtnDisabled(true);
     } else {
       setBtnDisabled(false);
       setWarningMessage("");
@@ -32,8 +41,13 @@ function FeedbackForm() {
       rating,
       text,
     };
-    addFeedback(newFeedback);
+    if (feedbackEditState.edit) {
+      updateFeedback(feedbackEditState.item.id, newFeedback);
+    } else {
+      addFeedback(newFeedback);
+    }
     setText("");
+    setBtnDisabled(true);
     setRating(10);
   }
 
