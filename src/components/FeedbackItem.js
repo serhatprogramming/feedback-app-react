@@ -1,22 +1,20 @@
 import Card from "./shared/Card";
-import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { useContext } from "react";
+import FeedbackContext from "../context/FeedbackContext";
 
-function FeedbackItem({ feedback, handleDelete }) {
+function FeedbackItem({ item }) {
+  const { deleteFeedback } = useContext(FeedbackContext);
   return (
     <Card reverse={false}>
-      <div className="num-display">{feedback.rating}</div>
-      <button onClick={() => handleDelete(feedback.id)} className="close">
+      <div className="num-display">{item.rating}</div>
+      <button onClick={() => deleteFeedback(item.id)} className="close">
         <FontAwesomeIcon color="red" icon={faTrashCan} />
       </button>
-      <div className="text-display">{feedback.text}</div>
+      <div className="text-display">{item.text}</div>
     </Card>
   );
 }
-
-FeedbackItem.propTypes = {
-  feedback: PropTypes.object.isRequired,
-};
 
 export default FeedbackItem;

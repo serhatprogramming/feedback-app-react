@@ -1,9 +1,11 @@
 import Card from "./shared/Card";
 import Button from "./shared/Button";
 import RatingSelect from "./RatingSelect";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import FeedbackContext from "../context/FeedbackContext";
 
-function FeedbackForm({ handleAdd }) {
+function FeedbackForm() {
+  const { addFeedback } = useContext(FeedbackContext);
   const [text, setText] = useState("");
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [warningMessage, setWarningMessage] = useState("");
@@ -19,7 +21,6 @@ function FeedbackForm({ handleAdd }) {
       setBtnDisabled(false);
       setWarningMessage("");
     }
-
     setText(e.target.value);
   }
 
@@ -31,15 +32,16 @@ function FeedbackForm({ handleAdd }) {
       rating,
       text,
     };
-    handleAdd(newFeedback);
+    addFeedback(newFeedback);
     setText("");
+    setRating(10);
   }
 
   return (
     <Card>
       <form onSubmit={handleSubmit}>
         <h2>How would you rate your service with us?</h2>
-        <RatingSelect select={(rating) => setRating(rating)} />
+        <RatingSelect select={(rating) => setRating(rating)} rate={rating} />
         <div className="input-group">
           <input
             onChange={handleInput}
